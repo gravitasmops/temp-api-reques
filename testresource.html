@@ -1,0 +1,128 @@
+<script runat=server>
+  
+/* THis is a sample extract from a REQUEST PAYLOAD */  
+  
+Platform.Load('Core','1.1.1');
+
+var host = 'https://reqres.in'
+ user = 'eve.holt@reqres.in',
+ password = "pistol";
+
+var de = DataExtension.Init("DEV_API_REQUES_SAMPLE");
+var complexfilter = {
+                LeftOperand:{
+                    Property:"CreatedDate",
+                    SimpleOperator:"greaterThan",
+                    Value: '06/22/2020'
+                },
+                LogicalOperator:"AND",
+                RightOperand:{
+                    Property:"Status",
+                    SimpleOperator:"equals",
+                    Value:"Unsubscribed"
+        }};
+
+var deArr = de.Rows.Retrieve(complexfilter);
+
+var token = retrieveToken(host,user,password);
+
+for (i=0; i<deArr.length;i++) {
+    var userID = deArr[i].UserID
+ var getUserObj = getUser(host,token,userID);
+  
+    var payload = {}
+    payload.EmailAddress = deArr[i].EmailAddress;
+    payload.FirstName = deArr[i].FirstName;
+    payload.LastName = deArr[i].LastName;
+    payload.Status = deArr[i].Status;
+
+    if(getUserObj.length > 1) {
+     var updateUserResp = updateUser(host,token,payload,userID);
+ } else {
+     var createUserResp = createUser(host,token,payload);
+ }
+}
+
+
+function retrieveToken(host,user,password) {
+
+    var url = host + '/api/register';
+    var payload = {}
+    payload.email = user;
+    payload.password = password;
+
+    var req = new Script.Util.HttpRequest(url);
+    req.emptyContentHandling = 0;
+    req.retries = 2;
+    req.continueOnError = true;
+    req.contentType = "application/json"
+    req.method = "POST";
+    req.postData = Stringify(payload);
+
+    var resp = req.send();
+
+    var resultStr = String(resp.content);
+    var resultJSON = Platform.Function.ParseJSON(String(resp.content));
+
+    return resultJSON.token;
+}
+
+function getUser(host,token,userID) {
+
+    var url = host + '/api/users/' + userID;
+    var req = new Script.Util.HttpRequest(url);
+    req.emptyContentHandling = 0;
+    req.retries = 2;
+    req.continueOnError = true;
+    req.contentType = "application/json"
+    req.method = "GET";
+    req.setHeader("Authorization", token);
+
+    var resp = req.send();
+
+    var resultStr = String(resp.content);
+    var resultJSON = Platform.Function.ParseJSON(String(resp.content));
+
+    return resultJSON;
+}
+
+function createUser(host,token,payload) {
+
+    var url = host + '/api/users';
+    var req = new Script.Util.HttpRequest(url);
+    req.emptyContentHandling = 0;
+    req.retries = 2;
+    req.continueOnError = true;
+    req.contentType = "application/json"
+    req.method = "POST";
+    req.setHeader("Authorization", token);
+    req.postData = Stringify(payload);
+
+    var resp = req.send();
+
+    var resultStr = String(resp.content);
+    var resultJSON = Platform.Function.ParseJSON(String(resp.content));
+
+    return resultJSON;
+}
+
+function updateUser(host,token,payload,userID) {
+
+    var url = host + '/api/users/' + userID;
+    var req = new Script.Util.HttpRequest(url);
+    req.emptyContentHandling = 0;
+    req.retries = 2;
+    req.continueOnError = true;
+    req.contentType = "application/json"
+    req.method = "PATCH";
+    req.setHeader("Authorization", token);
+    req.postData = Stringify(payload);
+
+    var resp = req.send();
+
+    var resultStr = String(resp.content);
+    var resultJSON = Platform.Function.ParseJSON(String(resp.content));
+
+    return resultJSON;
+}
+</script>
