@@ -39,9 +39,13 @@ for (i=0; i<deArr.length;i++) {
 
     if(getUserObj.length > 1) {
      var updateUserResp = updateUser(host,token,payload,userID);
+     var resp = req.send();
  } else {
      var createUserResp = createUser(host,token,payload);
+     var resp = req.send();
  }
+      // Assigning the response content to a AMPScript variable
+      Platform.Variable.SetValue("@runCode", resp.content)
 }
 
 
@@ -128,3 +132,6 @@ function updateUser(host,token,payload,userID) {
 }
 
 </script>
+
+
+  %%=TreatAsContent(@runCode)=%%
