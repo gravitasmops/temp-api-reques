@@ -28,7 +28,9 @@ var deArr = de.Rows.Retrieve(complexfilter); /* createing the array based on ret
 
 var token = retrieveToken(host,user,password); /* setting the token for the call */
 
-var dataset = getUsers(host,token,2);
+var dataset = getUser(host,token,1);
+var dataset = getUser(host,token,2);
+var dataset = getUser(host,token,3);
 
 for (i=0; i<deArr.length;i++) {
     var userID = 21010101010
@@ -111,7 +113,7 @@ function getUser(host,token,userID) {
     var resultStr = String(resp.content);
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
-    return resultJSON;
+    Write(resultStr);
     
 }
 
