@@ -28,19 +28,14 @@ var deArr = de.Rows.Retrieve(complexfilter); /* createing the array based on ret
 
 var token = retrieveToken(host,user,password); /* setting the token for the call */
 
-var dataset = getUser(host,token,1);
-var dataset = getUser(host,token,2);
-var dataset = getUser(host,token,3);
-
 for (i=0; i<deArr.length;i++) {
-    var userID = 21010101010
+    var userID = 1000000
  var getUserObj = getUser(host,token,userID); /* looping through the call */
   
     var payload = {} /* building a payload based on values */
     payload.email = deArr[i].EmailAddress;
     payload.first_name = deArr[i].FirstName;
     payload.last_name = deArr[i].LastName;
-    
 
     if(getUserObj.length > 1) {
      var updateUserResp = getUsers(host,token,payload,userID);
@@ -134,11 +129,32 @@ function createUser(host,token,payload) {
     var resultStr = String(resp.content);
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
-    return resultJSON;
+    Write(resultStr);
     
 }
 
 function updateUser(host,token,payload,userID) {
+
+    var url = host + '/api/users/' + userID;
+    var req = new Script.Util.HttpRequest(url);
+    req.emptyContentHandling = 0;
+    req.retries = 2;
+    req.continueOnError = true;
+    req.contentType = "application/json"
+    req.method = "PATCH";
+    req.setHeader("Authorization", token);
+    req.postData = Stringify(payload);
+
+    var resp = req.send();
+
+    var resultStr = String(resp.content);
+    var resultJSON = Platform.Function.ParseJSON(String(resp.content));
+
+    return resultJSON;
+    
+}
+
+function deleteUser(host,token,payload,userID) {
 
     var url = host + '/api/users/' + userID;
     var req = new Script.Util.HttpRequest(url);
