@@ -24,19 +24,18 @@ var complexfilter = {
                     Value:"Unsubscribed"
         }};
 
-var deArr = de.Rows.Retrieve(complexfilter);
+var deArr = de.Rows.Retrieve(complexfilter); /* createing the array based on retruned data and sotring in deArr
 
-var token = retrieveToken(host,user,password);
+var token = retrieveToken(host,user,password); /* setting the token for the call */
 
 for (i=0; i<deArr.length;i++) {
-    var userID = deArr[i].UserID
- var getUserObj = getUser(host,token,userID);
+    var userID = 25
+ var getUserObj = getUser(host,token,userID); /* looping through the call */
   
-    var payload = {}
-    payload.EmailAddress = deArr[i].EmailAddress;
-    payload.FirstName = deArr[i].FirstName;
-    payload.LastName = deArr[i].LastName;
-    payload.Status = deArr[i].Status;
+    var payload = {} /* building a payload based on values */
+    payload.email = deArr[i].EmailAddress;
+    payload.first_name = deArr[i].FirstName;
+    payload.last_name = deArr[i].LastName;
 
     if(getUserObj.length > 1) {
      var updateUserResp = updateUser(host,token,payload,userID);
@@ -127,4 +126,5 @@ function updateUser(host,token,payload,userID) {
 
     return resultJSON;
 }
+
 </script>
