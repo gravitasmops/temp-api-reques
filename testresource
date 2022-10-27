@@ -66,7 +66,7 @@ function retrieveToken(host,user,password) {
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
     return resultJSON.token;
-    Write(resultJSON);
+   Write(resultStr);
    
 }
 
@@ -87,7 +87,7 @@ function getUser(host,token,userID) {
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
     return resultJSON;
-    Write(resultJSON);
+    Write(resultStr);
     
 }
 
@@ -133,7 +133,7 @@ function updateUser(host,token,payload,userID) {
     return resultJSON;
     
     
-    Write(resultJSON);
+    Write(resultStr);
 }
 
 </script>
