@@ -28,22 +28,47 @@ var deArr = de.Rows.Retrieve(complexfilter); /* createing the array based on ret
 
 var token = retrieveToken(host,user,password); /* setting the token for the call */
 
+var dataset = getUsers(host,token,2);
+
 for (i=0; i<deArr.length;i++) {
-    var userID = 25
+    var userID = 21010101010
  var getUserObj = getUser(host,token,userID); /* looping through the call */
   
     var payload = {} /* building a payload based on values */
     payload.email = deArr[i].EmailAddress;
     payload.first_name = deArr[i].FirstName;
     payload.last_name = deArr[i].LastName;
+    
 
     if(getUserObj.length > 1) {
-     var updateUserResp = updateUser(host,token,payload,userID);
+     var updateUserResp = getUsers(host,token,payload,userID);
+ 
  } else {
      var createUserResp = createUser(host,token,payload);
  }
+ 
 }
 
+
+function getUsers(host,token,pageId) {
+
+ var url = host + '/api/users?page=' + pageId;
+    var req = new Script.Util.HttpRequest(url);
+    req.emptyContentHandling = 0;
+    req.retries = 2;
+    req.continueOnError = true;
+    req.contentType = "application/json"
+    req.method = "GET";
+    req.setHeader("Authorization", token);
+
+    var resp = req.send();
+
+    var resultStr = String(resp.content);
+    var resultJSON = Platform.Function.ParseJSON(String(resp.content));
+
+    Write(resultStr);
+    
+}
 
 function retrieveToken(host,user,password) {
 
@@ -66,7 +91,7 @@ function retrieveToken(host,user,password) {
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
     return resultJSON.token;
-   Write(resultStr);
+ 
    
 }
 
@@ -87,7 +112,6 @@ function getUser(host,token,userID) {
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
     return resultJSON;
-    Write(resultStr);
     
 }
 
@@ -110,7 +134,6 @@ function createUser(host,token,payload) {
 
     return resultJSON;
     
-    Write(resultJSON);
 }
 
 function updateUser(host,token,payload,userID) {
@@ -132,11 +155,8 @@ function updateUser(host,token,payload,userID) {
 
     return resultJSON;
     
-    
-    Write(resultStr);
 }
 
 </script>
 
 Does this update? I hope so!
-  %%=TreatAsContent(@runCode)=%%
