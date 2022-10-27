@@ -39,13 +39,9 @@ for (i=0; i<deArr.length;i++) {
 
     if(getUserObj.length > 1) {
      var updateUserResp = updateUser(host,token,payload,userID);
-     var resp = req.send();
  } else {
      var createUserResp = createUser(host,token,payload);
-     var resp = req.send();
  }
-      // Assigning the response content to a AMPScript variable
-      Platform.Variable.SetValue("@runCode", resp.content)
 }
 
 
@@ -70,6 +66,7 @@ function retrieveToken(host,user,password) {
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
     return resultJSON.token;
+   
 }
 
 function getUser(host,token,userID) {
@@ -89,6 +86,7 @@ function getUser(host,token,userID) {
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
     return resultJSON;
+    
 }
 
 function createUser(host,token,payload) {
@@ -109,6 +107,9 @@ function createUser(host,token,payload) {
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
     return resultJSON;
+    
+    
+    Platform.Variable.SetValue("@runCode", resultJSON);
 }
 
 function updateUser(host,token,payload,userID) {
@@ -129,6 +130,9 @@ function updateUser(host,token,payload,userID) {
     var resultJSON = Platform.Function.ParseJSON(String(resp.content));
 
     return resultJSON;
+    
+    
+    Platform.Variable.SetValue("@runCode", resultJSON);
 }
 
 </script>
